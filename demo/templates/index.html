@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>文本摘要生成</title>
+    <!-- 静态文件如css/js等文件在此处加载 -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/simple.css' %}">
+    <script src="{% static 'js/jquery-3.6.4.min.js' %}"></script>
+  </head>
+  <body>
+    <div id="header">
+      <span>Summary Extraction</span>
+      <button onclick="OpenHref('https://github.com/Smultronstall/Summary-Generation-Analysis')" target="_blank" id="href-button">Star for us</button>
+    </div>
+
+    <div id="content-container">
+      <div class="content">
+        <!-- Left content goes here -->
+        <form id="text-form" method="post">
+          <textarea id="original-text" name="original-text" rows="20" cols="10" placeholder="original text here..."></textarea>
+          <span style="padding: 5px; font-weight: bold;">Word count: 
+            <span id="char-count" >0</span>
+          </span>
+          <button type="button" id="submit-button">click to summarize!</button>
+        </form>
+      </div>
+
+      <div class="content" id="summary-content">
+        <!-- Right content goes here -->
+        <p>The generated summary is here...</p>
+      </div>
+    </div>
+  </body>
+  <script>
+    function OpenHref(url) {
+      var win = window.open(url, '_blank');
+      win.focus();
+    }
+  </script>
+  <script>
+    // 页面加载时(DOMContentLoaded)，处理相关内容
+    document.addEventListener('DOMContentLoaded', function () {
+
+        var textArea = document.getElementById('original-text');
+        var charCount = document.getElementById('char-count');
+
+        function updateCount(){
+          var currentCharCount = textArea.value.length;
+          charCount.style.color = "#B80000";
+          charCount.textContent = currentCharCount;          
+        }
+
+        // 输入栏，计数更新
+        textArea.addEventListener('input', updateCount);
+
+        // 在页面加载时更新计数
+        updateCount();
+        // 如果要限制最大字符数为100，可以添加以下逻辑
+        // if (currentCharCount > 100) {
+        //     textArea.value = textArea.value.slice(0, 100);
+        // }
+    });
+</script>
+<script>
+  $(document).ready(function (){
+    // 刷新时清空输入栏
+    $('#original-text').val('');
+
+    // ajax提交处理过程
+    $('#submit-button').click(function() {
+    var original_text = $('#text-form').serialize();
+    $.ajax({
+        type: 'POST',
+        url: '../summarize/',
+        data: original_text,
+        success: function(response) {
+          $('#summary-content').html('<p>' + response.output + '</p>');
+        },
+        error: function(xhr, status, error) {
+          console.log('URL:', this.url);
+          console.log('Status:', status);
+          console.log('Error:', error);
+        }
+      });
+    });
+  });
+
+</script>
+</html>
