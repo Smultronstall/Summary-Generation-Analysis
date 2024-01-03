@@ -23,13 +23,15 @@
           <span style="padding: 5px; font-weight: bold;">Word count: 
             <span id="char-count" >0</span>
           </span>
-          <button type="button" id="submit-button">click to summarize!</button>
+          <button type="button" id="submit-button" onclick="submitForm()">click to summarize!</button>
         </form>
       </div>
 
       <div class="content" id="summary-content">
         <!-- Right content goes here -->
-        <p>The generated summary is here...</p>
+        {% load static %}
+        <img id="prompt-img" src="{% static 'image/pencil-square.svg' %}" alt="Your Image">
+        <span id="summary-prompt">The generated summary is here...</span>
       </div>
     </div>
   </body>
@@ -37,6 +39,42 @@
     function OpenHref(url) {
       var win = window.open(url, '_blank');
       win.focus();
+    }
+
+    function submitForm() {
+            // 获取textarea的值
+            var input = document.getElementById("original-text").value;
+
+            // 检查textarea是否为空
+            if (input.trim() === "") {
+                alert("The input text can not be empty!");
+                var prompt = document.getElementById("summary-content");
+                prompt.innerHTML = `
+                {% load static %}
+                <img id="prompt-img" src="{% static 'image/pencil-square.svg' %}" alt="Your Image">
+                <span id="summary-prompt">The generated summary is here...</span>
+                `
+                window.isEmpty = true;
+            }
+            else {
+                window.isEmpty = false;
+                $.ajax({
+                  type: 'POST',
+                  url: '../summarize/',
+                  data: $('#text-form').serialize(),
+                  success: function(response) {
+                    if(!window.isEmpty) {
+                      $('#summary-content').html('<p>' + response.output + '</p>');
+                    }
+
+                  },
+                  error: function(xhr, status, error) {
+                      console.log('URL:', this.url);
+                      console.log('Status:', status);
+                      console.log('Error:', error);
+                      }
+                    });
+            }
     }
   </script>
   <script>
@@ -67,24 +105,6 @@
   $(document).ready(function (){
     // 刷新时清空输入栏
     $('#original-text').val('');
-
-    // ajax提交处理过程
-    $('#submit-button').click(function() {
-    var original_text = $('#text-form').serialize();
-    $.ajax({
-        type: 'POST',
-        url: '../summarize/',
-        data: original_text,
-        success: function(response) {
-          $('#summary-content').html('<p>' + response.output + '</p>');
-        },
-        error: function(xhr, status, error) {
-          console.log('URL:', this.url);
-          console.log('Status:', status);
-          console.log('Error:', error);
-        }
-      });
-    });
   });
 
 </script>
