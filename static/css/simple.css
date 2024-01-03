@@ -1,0 +1,73 @@
+body {
+    margin: 0;
+    background-color: #EEF5FF;
+    padding: 0;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#header {
+    text-align: left;
+    padding: 20px;
+    background-color: #3D3B40;
+    color: #EEF5FF;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+#href-button {
+    padding: 10px;
+    background-color: #AFC8AD;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    margin-left: 1170px;
+}
+
+#content-container {
+    display: flex;
+    justify-content: space-between;
+    font-family: inherit;
+}
+
+.content {
+    width: 46%; /* 可以根据需要调整宽度 */
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.content:first-child {
+    background-color: #fff;
+}
+
+/* 右边的内容块背景为浅灰色 */
+.content:last-child {
+    background-color: #F3F3F3;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+textarea {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: vertical;
+}
+
+#submit-button {
+    padding: 10px;
+    background-color: #176B87;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+}
