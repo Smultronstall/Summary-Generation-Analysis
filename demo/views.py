@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from .models import Text
+from django.utils import timezone
 # Create your views here.
 
 
@@ -19,4 +21,6 @@ def summarize(request):
         msg["input"] = original_text
         msg["output"] = original_text
         msg["status"] = 1
+        new_text = Text(content=original_text)
+        new_text.save()
     return JsonResponse(msg)
