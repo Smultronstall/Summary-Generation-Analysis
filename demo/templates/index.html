@@ -8,6 +8,77 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/simple.css' %}">
     <script src="{% static 'js/jquery-3.6.4.min.js' %}"></script>
+      
+    <script>
+      function OpenHref(url) {
+        var win = window.open(url, '_blank');
+        win.focus();
+      }
+
+      function submitForm() {
+              // 获取textarea的值
+              var input = document.getElementById("original-text").value;
+
+              // 检查textarea是否为空
+              if (input.trim() === "") {
+                  alert("The input text can not be empty!");
+                  var prompt = document.getElementById("summary-content");
+                  prompt.innerHTML = `
+                  {% load static %}
+                  <img id="prompt-img" src="{% static 'image/pencil-square.svg' %}" alt="Your Image">
+                  <span id="summary-prompt">The generated summary is here...</span>
+                  `
+                  window.isEmpty = true;
+              }
+              else {
+                  window.isEmpty = false;
+                  $.ajax({
+                    type: 'POST',
+                    url: '../summarize/',
+                    data: $('#text-form').serialize(),
+                    success: function(response) {
+                      if(!window.isEmpty) {
+                        $('#summary-content').html('<p>' + response.output + '</p>');
+                      }
+
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('URL:', this.url);
+                        console.log('Status:', status);
+                        console.log('Error:', error);
+                        }
+                      });
+              }
+      }
+
+      // 页面加载时(DOMContentLoaded)，处理相关内容
+      document.addEventListener('DOMContentLoaded', function () {
+
+          var textArea = document.getElementById('original-text');
+          var charCount = document.getElementById('char-count');
+
+          function updateCount(){
+            var currentCharCount = textArea.value.length;
+            charCount.style.color = "#B80000";
+            charCount.textContent = currentCharCount;          
+          }
+
+          // 输入栏，计数更新
+          textArea.addEventListener('input', updateCount);
+
+          // 在页面加载时更新计数
+          updateCount();
+          // 如果要限制最大字符数为100，可以添加以下逻辑
+          // if (currentCharCount > 100) {
+          //     textArea.value = textArea.value.slice(0, 100);
+          // }
+      });
+
+      $(document).ready(function (){
+      // 刷新时清空输入栏
+      $('#original-text').val('');
+    });
+    </script>
   </head>
   <body>
     <div id="header">
@@ -31,81 +102,8 @@
         <!-- Right content goes here -->
         {% load static %}
         <img id="prompt-img" src="{% static 'image/pencil-square.svg' %}" alt="Your Image">
-        <span id="summary-prompt">The generated summary is here...</span>
+        <span id="summary-prompt">The generated summary goes here...</span>
       </div>
     </div>
   </body>
-  <script>
-    function OpenHref(url) {
-      var win = window.open(url, '_blank');
-      win.focus();
-    }
-
-    function submitForm() {
-            // 获取textarea的值
-            var input = document.getElementById("original-text").value;
-
-            // 检查textarea是否为空
-            if (input.trim() === "") {
-                alert("The input text can not be empty!");
-                var prompt = document.getElementById("summary-content");
-                prompt.innerHTML = `
-                {% load static %}
-                <img id="prompt-img" src="{% static 'image/pencil-square.svg' %}" alt="Your Image">
-                <span id="summary-prompt">The generated summary is here...</span>
-                `
-                window.isEmpty = true;
-            }
-            else {
-                window.isEmpty = false;
-                $.ajax({
-                  type: 'POST',
-                  url: '../summarize/',
-                  data: $('#text-form').serialize(),
-                  success: function(response) {
-                    if(!window.isEmpty) {
-                      $('#summary-content').html('<p>' + response.output + '</p>');
-                    }
-
-                  },
-                  error: function(xhr, status, error) {
-                      console.log('URL:', this.url);
-                      console.log('Status:', status);
-                      console.log('Error:', error);
-                      }
-                    });
-            }
-    }
-  </script>
-  <script>
-    // 页面加载时(DOMContentLoaded)，处理相关内容
-    document.addEventListener('DOMContentLoaded', function () {
-
-        var textArea = document.getElementById('original-text');
-        var charCount = document.getElementById('char-count');
-
-        function updateCount(){
-          var currentCharCount = textArea.value.length;
-          charCount.style.color = "#B80000";
-          charCount.textContent = currentCharCount;          
-        }
-
-        // 输入栏，计数更新
-        textArea.addEventListener('input', updateCount);
-
-        // 在页面加载时更新计数
-        updateCount();
-        // 如果要限制最大字符数为100，可以添加以下逻辑
-        // if (currentCharCount > 100) {
-        //     textArea.value = textArea.value.slice(0, 100);
-        // }
-    });
-</script>
-<script>
-  $(document).ready(function (){
-    // 刷新时清空输入栏
-    $('#original-text').val('');
-  });
-
-</script>
 </html>
