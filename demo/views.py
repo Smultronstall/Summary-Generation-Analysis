@@ -23,4 +23,9 @@ def summarize(request):
         msg["status"] = 1
         new_text = Text(content=original_text)
         new_text.save()
+
+        # show the input history
+        all_texts = Text.objects.values()
+        all_texts = list(all_texts)[::-1]
+        msg["history"] = all_texts
     return JsonResponse(msg)

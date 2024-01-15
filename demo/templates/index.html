@@ -15,6 +15,23 @@
         win.focus();
       }
 
+      function LoadHistory(history) {
+        var history_list = '';
+        history_list += '<strong>Your input texts history go here...</strong>';
+        for(var i=0; i<history.length; i++) {
+            if (i > 7) {
+                break;
+            }
+            history_list += '<div class="item-box">'
+             _id = history[i].id;
+            _datetime = history[i].datetime;
+            _input = history[i].content;
+            _output = history[i].summary;
+            history_list += `<p>submit_time: ${_datetime}<br>input: ${_input}<br>output: ${_output}</p>`;
+            history_list += '</div>'
+        }
+        return history_list;
+      }
       function submitForm() {
               // 获取textarea的值
               var input = document.getElementById("original-text").value;
@@ -38,9 +55,11 @@
                     data: $('#text-form').serialize(),
                     success: function(response) {
                       if(!window.isEmpty) {
+                        history_list = LoadHistory(response.history);
                         $('#summary-content').html('<p>' + response.output + '</p>');
+                        $('#history-list').html(history_list);
+                        updateCount();
                       }
-
                     },
                     error: function(xhr, status, error) {
                         console.log('URL:', this.url);
@@ -56,13 +75,6 @@
 
           var textArea = document.getElementById('original-text');
           var charCount = document.getElementById('char-count');
-
-          function updateCount(){
-            var currentCharCount = textArea.value.length;
-            charCount.style.color = "#B80000";
-            charCount.textContent = currentCharCount;          
-          }
-
           // 输入栏，计数更新
           textArea.addEventListener('input', updateCount);
 
@@ -77,6 +89,7 @@
       $(document).ready(function (){
       // 刷新时清空输入栏
       $('#original-text').val('');
+      updateCount();
     });
     </script>
   </head>
@@ -105,5 +118,20 @@
         <span id="summary-prompt">The generated summary goes here...</span>
       </div>
     </div>
+    <div class="listpage" id="history-list">
+      <strong>
+        Your input text history goes here...<br>
+        Only latest 5 items are listed below
+      </strong>
+    </div>
   </body>
+  <script>
+      function updateCount(){
+          var textArea = document.getElementById('original-text');
+          var charCount = document.getElementById('char-count');
+          var currentCharCount = textArea.value.length;
+          charCount.style.color = "#B80000";
+          charCount.textContent = currentCharCount;          
+      }
+  </script>
 </html>

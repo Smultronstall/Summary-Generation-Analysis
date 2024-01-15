@@ -86,3 +86,19 @@ textarea {
     left: 45%;
     transform: translate(-50%, -50%);
 }
+
+.listpage {
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.item-box {
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #c2c2c2;
+}
